@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>LUXURY YACHTS | SCROLLTELLING EXPERIENCE</title>
+    <!-- Font Awesome Icons (CDN for crisp icons) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0a0f1a;
+            font-family: 'Segoe UI', 'Poppins', 'Inter', system-ui, -apple-system, sans-serif;
+            color: #eef4ff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0f1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2c7da0;
+            border-radius: 10px;
+        }
+
+        /* main container for scroll-telling sections */
+        .scrolly-container {
+            position: relative;
+            width: 100%;
+        }
+
+        /* each story panel */
+        .story-panel {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.3s ease;
+            scroll-snap-align: start;
+        }
+
+        /* background layers for dynamic imagery */
+        .panel-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            filter: brightness(0.5) saturate(1.1);
+            transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        .story-panel:hover .panel-bg {
+            transform: scale(1.02);
+        }
+
+        .content {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 2rem;
+            background: rgba(5, 10, 22, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 2.5rem 2rem;
+            border: 1px solid rgba(100, 150, 200, 0.3);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            transition: transform 0.5s ease, opacity 0.7s ease;
+            opacity: 0;
+            transform: translateY(35px);
+        }
+
+        /* animation class when panel becomes active (scrolled into view) */
+        .content.reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1, h2 {
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .story-panel h1 {
+            font-size: 3.2rem;
+            background: linear-gradient(135deg, #FFFFFF, #7bc5e8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .story-panel h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            color: #d9f0ff;
+        }
+
+        .price-tag {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #f5c542;
+            margin: 1rem 0;
+            letter-spacing: 1px;
+        }
+
+        .specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .specs span {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            backdrop-filter: blur(4px);
+            font-weight: 500;
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 1.2rem;
+            padding: 0.9rem 2rem;
+            background: linear-gradient(95deg, #1e5a7d, #0f3b4f);
+            border: none;
+            border-radius: 40px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .btn:hover {
+            background: linear-gradient(95deg, #2c7da0, #1c5c7a);
+            transform: scale(1.02);
+            letter-spacing: 0.5px;
+        }
+
+        .intro-text {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            margin-top: 1rem;
+        }
+
+        /* parallax & floating elements */
+        .floating-icon {
+            position: absolute;
+            z-index: 2;
+            opacity: 0.2;
+            font-size: 8rem;
+            bottom: 5%;
+            right: 3%;
+            pointer-events: none;
+        }
+
+        /* gallery-like mini cards */
+        .feature-grid {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        .feature-card {
+            background: rgba(255,255,245,0.1);
+            backdrop-filter: blur(8px);
+            padding: 1rem 1.2rem;
+            border-radius: 28px;
+            width: 140px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .feature-card i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+            color: #7bc5e8;
+        }
+
+        /* CTA section */
+        .cta-section .btn {
+            background: #d9a13b;
+            color: #0a0f1a;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(217,161,59,0.5);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.8rem;
+            background: #03060c;
+            color: #8b9bb5;
+        }
+
+        /* responsive */
+        @media (max-width: 750px) {
+            .content {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            .story-panel h1 {
+                font-size: 2.2rem;
+            }
+            .story-panel h2 {
+                font-size: 1.6rem;
+            }
+            .price-tag {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* scroll-telling: subtle progress indicator */
+        .scroll-progress {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            padding: 8px 15px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            font-family: monospace;
+            z-index: 999;
+            color: #c3e2fc;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="scrolly-container">
+    <!-- SECTION 0: Hero / Introduction -->
+    <section class="story-panel" id="hero">
+        <img class="panel-bg" src="https://images.pexels.com/photos/2680270/pexels-photo-2680270.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Luxury yacht ocean">
+        <div class="floating-icon"><i class="fas fa-ship"></i></div>
+        <div class="content">
+            <h1>✦ BEYOND THE HORIZON ✦</h1>
+            <p class="intro-text">Experience the pinnacle of maritime elegance. Handcrafted yachts & luxury vessels for the discerning explorer.</p>
+            <div class="feature-grid">
+                <div class="feature-card"><i class="fas fa-crown"></i> Italian Design</div>
+                <div class="feature-card"><i class="fas fa-water"></i> Zero-Speed Stabilizers</div>
+                <div class="feature-card"><i class="fas fa-wifi"></i> Smart Navigation</div>
+            </div>
+            <a href="#azimut" class="btn">DISCOVER FLEET <i class="fas fa-arrow-down"></i></a>
+        </div>
+    </section>
+
+    <!-- SECTION 1: AZIMUT 72 -->
+    <section class="story-panel" id="azimut">
+        <img class="panel-bg" src="https://images.pexels.com/photos/1809602/pexels-photo-1809602.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Azimut yacht">
+        <div class="floating-icon"><i class="fas fa-fan"></i></div>
+        <div class="content">
+            <h2>AZIMUT 72 ✦ FLYBRIDGE</h2>
+            <div class="specs">
+                <span><i class="fas fa-ruler-combined"></i> 72 ft</span>
+                <span><i class="fas fa-bed"></i> 4 Cabins</span>
+                <span><i class="fas fa-tachometer-alt"></i> 32 knots max</span>
+                <span><i class="fas fa-users"></i> 12 guests</span>
+            </div>
+            <p style="margin-bottom: 0.6rem;">Timeless elegance meets performance. Expansive flybridge, carbon fiber tech, and seamless ocean cruising.</p>
+            <div class="price-tag"><i class="fas fa-tag"></i> $2,890,000</div>
+            <a href="#" class="btn inquire-btn" data-model="Azimut 72">INQUIRE NOW <i class="fas fa-envelope"></i></a>
+        </div>
+    </section>
+
+    <!-- SECTION 2: PERSHING 9X -->
+    <section class="story-panel" id="pershing">
+        <img class="panel-bg" src="https://images.pexels.com/photos/3099430/pexels-photo-3099430.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Pershing sport yacht">
+        <div class="floating-icon"><i class="fas fa-bolt"></i></div>
+        <div class="content">
+            <h2>PERSHING 9X ▸ SPORT YACHT</h2>
+            <div class="specs">
+                <span><i class="fas fa-ruler-combined"></i> 92 ft</span>
+                <span><i class="fas fa-dice-d6"></i> 3 Cabins + Crew</span>
+                <span><i class="fas fa-gauge-high"></i> 43 knots</span>
+                <span><i class="fas fa-sun"></i> Openable Hardtop</span>
+            </div>
+            <p>Adrenaline and style: deep-V hull, wave-piercing aerodynamics, avant-garde interior design by Fulvio De Simoni.</p>
+            <div class="price-tag"><i class="fas fa-tag"></i> $4,250,000</div>
+            <a href="#" class="btn inquire-btn" data-model="Pershing 9X">REQUEST BROCHURE <i class="fas fa-download"></i></a>
+        </div>
+    </section>
+
+    <!-- SECTION 3: PRINCESS X95 -->
+    <section class="story-panel" id="princess">
+        <img class="panel-bg" src="https://images.pexels.com/photos/1667343/pexels-photo-1667343.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Princess X95 superyacht">
+        <div class="floating-icon"><i class="fas fa-champagne-glasses"></i></div>
+        <div class="content">
+            <h2>PRINCESS X95 ▸ SUPERYACHT</h2>
+            <div class="specs">
+                <span><i class="fas fa-ruler-combined"></i> 95 ft</span>
+                <span><i class="fas fa-layer-group"></i> 5 Staterooms</span>
+                <span><i class="fas fa-swimming-pool"></i> Beach Club</span>
+                <span><i class="fas fa-chart-line"></i> 24 knots cruise</span>
+            </div>
+            <p>The revolutionary 'X-TEND' concept with panoramic main deck, sky lounge & unrivaled volume. Ultimate home on water.</p>
+            <div class="price-tag"><i class="fas fa-tag"></i> $6,950,000</div>
+            <a href="#" class="btn inquire-btn" data-model="Princess X95">BOOK SEA TRIAL <i class="fas fa-calendar-alt"></i></a>
+        </div>
+    </section>
+
+    <!-- SECTION 4: CUSTOMER EXPERIENCE + WHY US -->
+    <section class="story-panel" id="whyus">
+        <img class="panel-bg" src="https://images.pexels.com/photos/2875074/pexels-photo-2875074.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="yacht sunset interior">
+        <div class="floating-icon"><i class="fas fa-gem"></i></div>
+        <div class="content">
+            <h2><i class="fas fa-hand-sparkles"></i> Concierge Experience</h2>
+            <div class="feature-grid" style="margin-bottom: 1.2rem;">
+                <div class="feature-card"><i class="fas fa-globe"></i> Worldwide Delivery</div>
+                <div class="feature-card"><i class="fas fa-chart-pie"></i> Bespoke Financing</div>
+                <div class="feature-card"><i class="fas fa-map-marked-alt"></i> Private Showings</div>
+            </div>
+            <p style="font-style: italic;">"We redefine maritime ownership — from custom refits to crew training, our team ensures a seamless journey."</p>
+            <div style="margin: 1rem 0;"><i class="fas fa-star" style="color: gold;"></i> <strong>5-star rated</strong> · 40+ vessels sold this year</div>
+            <a href="#" class="btn" id="contactScrollBtn">SPEAK WITH ADVISOR <i class="fas fa-phone-alt"></i></a>
+        </div>
+    </section>
+
+    <!-- SECTION 5: CTA / CONTACT + NEWSLETTER -->
+    <section class="story-panel cta-section" id="contact">
+        <img class="panel-bg" src="https://images.pexels.com/photos/325111/pexels-photo-325111.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Mediterranean marina">
+        <div class="floating-icon"><i class="fas fa-anchor"></i></div>
+        <div class="content">
+            <h2>Own the waves, define luxury.</h2>
+            <p style="font-size: 1.1rem;">Get exclusive offers, virtual tours, and early access to new arrivals.</p>
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; margin: 1.8rem 0;">
+                <input type="email" id="newsEmail" placeholder="Your email address" style="padding: 0.9rem 1.2rem; border-radius: 60px; border: none; background: rgba(255,255,245,0.9); color: #0a0f1a; width: 260px; font-weight: 500;">
+                <button id="subscribeBtn" class="btn" style="background: #f5b642; color:#0a0f1a;">SUBSCRIBE <i class="fas fa-paper-plane"></i></button>
+            </div>
+            <p><i class="fas fa-shield-alt"></i> 100% privacy · No spam · VIP treatment</p>
+            <div style="margin-top: 1rem;">
+                <a href="tel:+1234567890" style="color: #b9e2ff; text-decoration: none; margin: 0 10px;"><i class="fas fa-headset"></i> +1 (888) YACHT-CO</a>
+            </div>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <p>© 2025 BLUEWATER COLLECTION — Where dreams set sail. All trademarks and vessels displayed are for inspiration.</p>
+</footer>
+
+<div class="scroll-progress" id="scrollProgress">⬇ SCROLL FOR STORY ⬇</div>
+
+<script>
+    (function() {
+        // SCROLLTELLING MAGIC: reveal content when each panel enters viewport
+        const allContents = document.querySelectorAll('.content');
+        const panels = document.querySelectorAll('.story-panel');
+        
+        // intersection observer for fade-up reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const contentDiv = entry.target.querySelector('.content');
+                    if (contentDiv && !contentDiv.classList.contains('reveal')) {
+                        contentDiv.classList.add('reveal');
+                    }
+                    // optional: add dynamic bg effect / text progress
+                    updateProgressBasedOnActive(entry.target);
+                }
+            });
+        }, { threshold: 0.35 });  // trigger when 35% visible for smooth storytelling
+        
+        panels.forEach(panel => {
+            observer.observe(panel);
+            // pre-check if any panel is already visible on load
+            const rect = panel.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 100 && rect.bottom > 100) {
+                const contentDiv = panel.querySelector('.content');
+                if (contentDiv) contentDiv.classList.add('reveal');
+            }
+        });
+        
+        // also reveal any content that might have been missed: manual fallback
+        function checkInitialVisibility() {
+            panels.forEach(panel => {
+                const rect = panel.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 50 && rect.bottom > 50) {
+                    const contentDiv = panel.querySelector('.content');
+                    if (contentDiv) contentDiv.classList.add('reveal');
+                }
+            });
+        }
+        checkInitialVisibility();
+        
+        // progress indicator for scroll telling
+        const progressDiv = document.getElementById('scrollProgress');
+        function updateProgressBasedOnActive(activePanel) {
+            if (!activePanel) return;
+            const index = Array.from(panels).indexOf(activePanel);
+            const total = panels.length;
+            let message = '';
+            switch(index) {
+                case 0: message = '⚓ LUXURY AWAITS'; break;
+                case 1: message = '✨ AZIMUT 72 · ITALIAN STYLE'; break;
+                case 2: message = '⚡ PERSHING 9X · SPORT PERFORMANCE'; break;
+                case 3: message = '🏰 PRINCESS X95 · SUPERIOR VOLUME'; break;
+                case 4: message = '🎩 BESPOKE CONCIERGE'; break;
+                case 5: message = '📞 CLAIM YOUR YACHT'; break;
+                default: message = '⬇ EXPLORE FLEET ⬇';
+            }
+            if (progressDiv) {
+                progressDiv.innerHTML = `<i class="fas fa-sailboat"></i> ${message}`;
+                // auto fade after scroll idle? keep visible
+            }
+        }
+        
+        // on scroll update progress but also smooth effect for anchor navigation
+        window.addEventListener('scroll', () => {
+            let bestMatch = null;
+            let bestVisibility = 0;
+            panels.forEach(panel => {
+                const rect = panel.getBoundingClientRect();
+                const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+                const percentVisible = visibleHeight / rect.height;
+                if (percentVisible > bestVisibility && percentVisible > 0.2) {
+                    bestVisibility = percentVisible;
+                    bestMatch = panel;
+                }
+            });
+            if (bestMatch) {
+                updateProgressBasedOnActive(bestMatch);
+            }
+        });
+        
+        // 2. Inquire Button Handler: shows alert with model + smooth storytelling user feedback
+        const inquireBtns = document.querySelectorAll('.inquire-btn');
+        inquireBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const model = btn.getAttribute('data-model') || 'this luxury vessel';
+                alert(`✨ Thank you for your interest in ${model}! One of our yacht specialists will contact you shortly with exclusive details.`);
+            });
+        });
+        
+        // Subscribe button
+        const subBtn = document.getElementById('subscribeBtn');
+        if (subBtn) {
+            subBtn.addEventListener('click', () => {
+                const emailInput = document.getElementById('newsEmail');
+                const email = emailInput.value.trim();
+                if (email && email.includes('@') && email.includes('.')) {
+                    alert(`🌊 Ahoy! ${email} is now subscribed to Bluewater Collection. Get ready for exclusive yacht showcases.`);
+                    emailInput.value = '';
+                } else {
+                    alert('Please enter a valid email to receive luxury yacht insights.');
+                }
+            });
+        }
+        
+        // contact scroll btn (in whyus section) smooth scroll to contact panel
+        const contactScrollBtn = document.getElementById('contactScrollBtn');
+        if (contactScrollBtn) {
+            contactScrollBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const contactSection = document.getElementById('contact');
+                if (contactSection) {
+                    contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        }
+        
+        // Anchor navigation for hero button "DISCOVER FLEET" and general smoothness
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId && targetId !== '#') {
+                    const targetElem = document.querySelector(targetId);
+                    if (targetElem) {
+                        e.preventDefault();
+                        targetElem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        });
+        
+        // additional dynamic: change floating icon color on scroll? no needed, but adds fun
+        // also parallax-like effect on background images (tiny move on mousemove for elegance)
+        document.body.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX / window.innerWidth;
+            const mouseY = e.clientY / window.innerHeight;
+            const bgImages = document.querySelectorAll('.panel-bg');
+            bgImages.forEach((bg, idx) => {
+                // subtle movement only if hover not intensive performance
+                const moveX = (mouseX - 0.5) * 8;
+                const moveY = (mouseY - 0.5) * 8;
+                bg.style.transform = `scale(1.02) translate(${moveX * 0.3}px, ${moveY * 0.3}px)`;
+            });
+        });
+        
+        // reset transform on mouseleave? keep lightweight
+        let timeout;
+        document.body.addEventListener('mouseleave', () => {
+            const bgImages = document.querySelectorAll('.panel-bg');
+            bgImages.forEach(bg => {
+                bg.style.transform = 'scale(1)';
+            });
+        });
+        
+        // ensure that content that wasn't revealed due to fast load gets revealed on any scroll
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                panels.forEach(panel => {
+                    const rect = panel.getBoundingClientRect();
+                    if (rect.top < window.innerHeight - 100) {
+                        const contentDiv = panel.querySelector('.content');
+                        if (contentDiv && !contentDiv.classList.contains('reveal')) contentDiv.classList.add('reveal');
+                    }
+                });
+            }, 300);
+        });
+    })();
+</script>
+</body>
+</html>
